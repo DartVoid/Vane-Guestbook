@@ -1,0 +1,28 @@
+application: Vane Guestbook
+version: 1
+deploy: true
+pub: true
+dart2js: false 
+
+handlers:
+- url: /posts/list
+  match: exact 
+  script: guestbook.dart
+  controller: GetAllPosts
+  
+- url: /posts/add
+  match: exact 
+  script: guestbook.dart
+  controller: SavePost
+  
+- url: /posts/delete
+  match: exact 
+  script: guestbook.dart
+  controller: DeletePosts
+
+# Static content  
+- url: /
+  match: postregex
+  static_dir: web
+
+

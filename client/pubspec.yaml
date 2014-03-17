@@ -1,0 +1,4 @@
+name: vane_guestbook
+description: A sample application
+dependencies:
+  browser: any
