@@ -2,7 +2,5 @@ name: vane_guestbook
 description: A sample application
 dependencies:
   mongo_dart: any
-  vane:
-    git:
-      ref: master
-      url: git@bitbucket.org:dartvoid/vane.git
+  vane: any
+  
