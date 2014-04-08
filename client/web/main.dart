@@ -3,48 +3,66 @@ import 'dart:async';
 import 'dart:convert';
 
 void main() {
-  var formInput  = querySelector("#form-input");
-  var formSubmit = querySelector("#form-submit");
-  var formClearAll  = querySelector("#form-clearall");
-  var formText   = querySelector("#form-text");
-  var posts      = querySelector("#posts");
+  InputElement formName     = querySelector("#form-input-name");
+  TextAreaElement formMess  = querySelector("#form-input-message");
+  
+  ButtonElement formSubmit    = querySelector("#form-submit");
+  ButtonElement formClearAll  = querySelector("#form-clear-all");
+  
+  DivElement respWrap = querySelector("#response-wrapper");
+  DivElement formResp = querySelector("#response");
   
   // Fetch list of posts
-  getPosts().then((response) => addPostsToDOM(posts, response)); 
+  getPosts().then((response) => addPostsToDOM(formResp, response)); 
   
   // Submit data
   formSubmit.onClick.listen((e) {
     e.preventDefault();
     HttpRequest.request("/posts/add", method: "POST", 
       requestHeaders: {"Content-Type": "application/json"},
-      sendData: JSON.encode({"name": formInput.value, "message": formText.value}))
+      sendData: JSON.encode({"name": formName.value, "message": formMess.value}))
     .then((response) {
-      logResponse(response.responseText);
-      getPosts().then((response) => addPostsToDOM(posts, response));
-    }).catchError((e) => logResponse("${e}"));
+      getPosts().then((response) => addPostsToDOM(formResp, response));
+    }).catchError((e) {
+      print("Unable to add post");
+    });
   });
   
   // Remove all posts
   formClearAll.onClick.listen((e) {
     e.preventDefault();
+    formResp.children.clear();
+    
     deletePosts().then((response) { 
-      logResponse(response);
-      getPosts().then((response) => addPostsToDOM(posts, response));
+      print(response);
+      getPosts().then((response) => addPostsToDOM(formResp, response));
     });
   });
 }
 
-void logResponse(String response) {
-  window.console.log(response);
-}
-
-void addPostsToDOM(var posts, String response) {
-  var responseList = JSON.decode(response);
-  posts.children.clear();
-  responseList.forEach((postMap) {
-    posts.append(new ParagraphElement()
-      ..text = "${postMap["name"]} - ${postMap["message"]}");
-  });
+void addPostsToDOM(DivElement posts, String response) {
+  if(response != "") {
+    List responseList = JSON.decode(response);
+    posts.children.clear();
+    responseList.forEach((Map post) {
+      
+      DivElement postDiv = new DivElement()
+        ..classes = ["content-offset", "well"]
+        ..children.addAll(
+        [
+          new ParagraphElement()
+            ..classes.add("text-bold")
+            ..text = "${post["name"]}",
+            
+          new ParagraphElement()
+            ..text = "${post["message"]}"
+        ]
+      );
+      
+      posts.append(postDiv);
+      
+    });
+  }
 }
 
 Future<String> getPosts() {
@@ -52,7 +70,7 @@ Future<String> getPosts() {
   HttpRequest.request("/posts/list", method: "GET").then((response) {
     c.complete(response.responseText); 
   }).catchError((e) {
-    logResponse(e);
+    print("Unable to get posts");
     c.complete("");
   });
   
@@ -64,9 +82,10 @@ Future deletePosts() {
   HttpRequest.request("/posts/delete", method: "DELETE").then((response) {
     c.complete(response.responseText); 
   }).catchError((e) {
-    logResponse(e);
+    print("Unable to delete posts");
     c.complete("");
   });
     
   return c.future;
 }
+

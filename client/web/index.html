@@ -4,20 +4,33 @@
   <head>
     <meta charset="utf-8">
     <title>Vane - Guestbook</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/pure-min.css">
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <h1>Vane - Guestbook</h1>
-    <button id="form-clearall">Clear all posts</button>
-    <form>
-      <input id="form-input" type="text">
-      <div>
-        <textarea id="form-text"></textarea>
+
+    <div class="pure-g-r content content-offset">
+      <div class="pure-u-1-1 well">
+        <form class="pure-form pure-form-stacked">
+          <fieldset>
+            <legend class="form-legend">Vane - Guestbook</legend>
+            
+            <input id="form-input-name" type="text" placeholder="Name">
+            <textarea id="form-input-message" cols="40" placeholder="Message"></textarea>
+            
+            <button id="form-submit" class="pure-button pure-button-primary" type="submit">Submit</button>
+            <input id="form-clear" class="pure-button" type="reset">
+            <button id="form-clear-all" class="pure-button">Clear all posts</button> 
+          </fieldset>
+        </form>
       </div>
-      <input id="form-submit" type="submit">
-    </form>
+    </div>
     
-    <div id="posts"></div>
+    <div class="pure-g-r content content-offset">
+      <div id="response-wrapper" class="pure-u-1-1">
+        <div id="response"></div>
+      </div>
+    </div>
     
     <script type="application/dart" src="main.dart"></script>
     <script src="packages/browser/dart.js"></script>
