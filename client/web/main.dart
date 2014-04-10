@@ -28,7 +28,7 @@ void main() {
       requestHeaders: {"Content-Type": "application/json"},
       sendData: JSON.encode({"name": formName.value, "message": formMess.value}))
     .then((response) {
-      print(response);
+      print(response.responseText);
       
       // Reload list of posts
       getPosts().then((response) => addPostsToDOM(formResp, response));
