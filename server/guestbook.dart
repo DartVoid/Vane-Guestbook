@@ -3,19 +3,23 @@ import 'package:vane/vane.dart';
 
 String collectionName = "posts";
 
+/// Find all posts in collection "posts"
 class GetAllPosts extends Vane {
   Future main() {
+    log.info("Guestbook : GetAllPosts");
+    
     mongodb.then((mongodb) {
       var coll = mongodb.collection(collectionName);
       coll.find().toList().then((data) {
-        log.info(data.toString());
+        log.info("Got ${data.length} post(s)");
+        log.info("${data}");
         close(data);
       }).catchError((e) {
-        log.warning(e.toString());
+        log.warning("Unable to get post(s): ${e}");
         close(new List());
       });
     }).catchError((e) {
-      log.warning(e.toString());
+      log.warning("Unable to get post(s): ${e}");
       close(new List());
     });
     
@@ -23,19 +27,23 @@ class GetAllPosts extends Vane {
   }
 }
 
+/// Add post to collection "posts"
 class SavePost extends Vane {
   Future main() {
+    log.info("Guestbook : SavePosts");
+    
     mongodb.then((mongodb) {
       var coll = mongodb.collection(collectionName);
       coll.insert({"name": json["name"], "message": json["message"]}).then((data) {
-        log.info(data.toString());
+        log.info("Added post: $json");
+        log.info("${data}");
         close("Added post: $json");
       }).catchError((e) {
-        log.warning(e.toString());
+        log.warning("Unable to save post: ${e}");
         close("Unable to save post");
       });
     }).catchError((e) {
-      log.warning(e.toString());
+      log.warning("Unable to save post: ${e}");
       close("Unable to save post");
     });
     
@@ -43,19 +51,23 @@ class SavePost extends Vane {
   }
 }
 
+/// Delete all posts in collection "posts"
 class DeletePosts extends Vane {
   Future main() {
+    log.info("Guestbook : DeletePosts");
+    
     mongodb.then((mongodb) {
       var coll = mongodb.collection(collectionName);
       coll.remove().then((data) {
-        log.info(data.toString());
+        log.info("Removed ${data["n"]} posts");
+        log.info("${data}");
         close("Removed ${data["n"]} posts");
       }).catchError((e) {
-        log.warning(e.toString());
+        log.warning("Unable to delete posts: ${e}");
         close("Unable to delete posts");
       });
     }).catchError((e) {
-      log.warning(e.toString());
+      log.warning("Unable to delete posts: ${e}");
       close("Unable to delete posts");
     });
     
