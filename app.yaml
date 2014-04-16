@@ -2,7 +2,7 @@ application: Vane Guestbook
 version: 1
 deploy: true
 pub: true
-dart2js: false 
+dart2js: true 
 
 handlers:
 - url: /posts/list
