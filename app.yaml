@@ -8,17 +8,17 @@ handlers:
 - url: /posts/list
   match: exact 
   script: guestbook.dart
-  controller: GetAllPosts
+  handler: GetAllPosts
   
 - url: /posts/add
   match: exact 
   script: guestbook.dart
-  controller: SavePost
+  handler: SavePost
   
 - url: /posts/delete
   match: exact 
   script: guestbook.dart
-  controller: DeletePosts
+  handler: DeletePosts
 
 # Static content  
 - url: /
