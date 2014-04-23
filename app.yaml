@@ -7,22 +7,35 @@ dart2js: true
 handlers:
 - url: /posts/list
   match: exact 
-  script: guestbook.dart
-  handler: GetAllPosts
+  handler: guestbook.dart:GetAllPosts
   
 - url: /posts/add
   match: exact 
-  script: guestbook.dart
-  handler: SavePost
+  handler: guestbook.dart:SavePost
   
 - url: /posts/delete
   match: exact 
-  script: guestbook.dart
-  handler: DeletePosts
+  handler: guestbook.dart:DeletePosts
 
 # Static content, will be served by your app's Nginx instance 
 - url: /
   match: postregex
   static_dir: web
-
+  
+  
+# Equivalent longer config for the Dart handlers above  
+#- url: /posts/list
+#  match: exact 
+#  script: guestbook.dart
+#  handler: GetAllPosts
+#  
+#- url: /posts/add
+#  match: exact 
+#  script: guestbook.dart
+#  handler: SavePost
+#  
+#- url: /posts/delete
+#  match: exact 
+#  script: guestbook.dart
+#  handler: DeletePosts
 
