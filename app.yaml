@@ -20,7 +20,7 @@ handlers:
   script: guestbook.dart
   handler: DeletePosts
 
-# Static content  
+# Static content, will be served by your app's Nginx instance 
 - url: /
   match: postregex
   static_dir: web
