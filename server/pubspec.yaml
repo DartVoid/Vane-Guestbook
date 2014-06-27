@@ -1,5 +1,5 @@
-name: vane_guestbook
-description: A sample application
+name: server
 dependencies:
-  vane: any
-  
+  vane: ">=0.5.0 <0.6.0"
+
+
