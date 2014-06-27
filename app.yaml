@@ -1,14 +1,7 @@
 name: Vane Guestbook
 
 server:
-- url: /posts/list
-  method: GET
-
-- url: /posts/add
-  method: POST
-
-- url: /posts/delete
-  method: DELETE
+- url: /posts
 
 client:
 - url: /
