@@ -1,35 +1,17 @@
-application: Vane Guestbook
-version: 1
-deploy: true
-pub: true
-dart2js: true 
+name: Vane Guestbook
 
-handlers:
+server:
 - url: /posts/list
-  handler: guestbook.dart:GetAllPosts
-  
-- url: /posts/add
-  handler: guestbook.dart:SavePost
-  
-- url: /posts/delete
-  handler: guestbook.dart:DeletePosts
+  method: GET
 
-# Static content, will be served by your app's Nginx instance 
+- url: /posts/add
+  method: POST
+
+- url: /posts/delete
+  method: DELETE
+
+client:
 - url: /
   match: postregex
-  static_dir: web
-  
-  
-# Equivalent longer config for the Dart handlers above  
-#- url: /posts/list
-#  script: guestbook.dart
-#  handler: GetAllPosts
-#  
-#- url: /posts/add
-#  script: guestbook.dart
-#  handler: SavePost
-#  
-#- url: /posts/delete
-#  script: guestbook.dart
-#  handler: DeletePosts
+  dir: web
 
