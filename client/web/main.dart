@@ -2,6 +2,59 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:convert';
 
+class PostService {
+  String serviceUrl;
+
+  PostService({this.serviceUrl}) {
+    if(serviceUrl == null) serviceUrl = "";
+  }
+
+  /// Get all posts
+  Future list() {
+    var c = new Completer();
+
+    HttpRequest.request("$serviceUrl/posts/list", method: "GET").then((response) {
+      c.complete(response.responseText);
+    }).catchError((e) {
+      print("Unable to list posts");
+      c.complete();
+    });
+
+    return c.future;
+  }
+
+  /// Add new post
+  Future add(String name, String message) {
+    var c = new Completer();
+
+    HttpRequest.request("$serviceUrl/posts/add", method: "POST",
+      requestHeaders: {"Content-Type": "application/json"},
+      sendData: JSON.encode({"name": name, "message": message}))
+    .then((response) {
+      c.complete(response.responseText);
+    }).catchError((e) {
+      print("Unable to add post");
+      c.complete();
+    });
+
+    return c.future;
+  }
+
+  /// Remove all posts
+  Future remove() {
+    var c = new Completer();
+
+    HttpRequest.request("$serviceUrl/posts/remove", method: "DELETE").then((response) {
+      c.complete(response.responseText);
+    }).catchError((e) {
+      print("Unable to delete posts");
+      c.complete();
+    });
+
+    return c.future;
+  }
+}
+
 void main() {
   // Form input
   InputElement formName     = querySelector("#form-input-name");
@@ -15,97 +68,49 @@ void main() {
   DivElement respWrap = querySelector("#response-wrapper");
   DivElement formResp = querySelector("#response");
 
-  // Load the list of previously added posts
-  getPosts().then((response) => addPostsToDOM(formResp, response));
+  // Init service
+  PostService service = new PostService();
 
-  // Handle form submit
+  // Get list of posts on load
+  service.list().then((response) => addToDom(formResp, response));
+
+  // Catch form submit
   formSubmit.onClick.listen((e) {
-    // Prevent default form actions
     e.preventDefault();
+    service.add(formName.value, formMess.value).then((response) {
+      print(response);
 
-    // Send request to the server
-    HttpRequest.request("/posts", method: "POST",
-      requestHeaders: {"Content-Type": "application/json"},
-      sendData: JSON.encode({"name": formName.value, "message": formMess.value}))
-    .then((response) {
-      print(response.responseText);
-
-      // Reload list of posts
-      getPosts().then((response) => addPostsToDOM(formResp, response));
-    }).catchError((e) {
-      print("Unable to add post");
+      // Reload post list
+      service.list().then((response) => addToDom(formResp, response));
     });
   });
 
-  // Remove all posts
+  // Clear all
   formClearAll.onClick.listen((e) {
-    // Prevent default form actions
     e.preventDefault();
 
-    // Clear list of posts
+    // Clear response output
     formResp.children.clear();
 
-    // Delete posts from the database
-    deletePosts().then((response) {
-      print(response);
-      getPosts().then((response) => addPostsToDOM(formResp, response));
-    });
+    // Remove posts
+    service.remove().then((response) => print(response));
   });
 }
 
-// Add a post to the dom
-void addPostsToDOM(DivElement posts, String response) {
+// Add posts to the DOM
+void addToDom(DivElement formResp, String response) {
   if(response != "") {
-    List responseList = JSON.decode(response);
-    posts.children.clear();
-    responseList.forEach((Map post) {
+    formResp.children.clear();
+    List jsonData = JSON.decode(response);
 
-      // Create a new dom element for each post
-      DivElement postDiv = new DivElement()
-        ..classes = ["content-offset", "well"]
-        ..children.addAll(
-        [
-          new ParagraphElement()
-            ..classes.add("text-bold")
-            ..text = "${post["name"]}",
-          new ParagraphElement()
-            ..text = "${post["message"]}"
-        ]
-      );
-
-      // Append the new element to parent div
-      posts.append(postDiv);
+    jsonData.forEach((post) {
+      formResp.appendHtml('''
+<div class="content-offset well">
+  <p><strong>${post["name"]}</strong></p>
+  <p>${post["message"]}</p>
+</div>
+''');
     });
   }
-}
-
-// Get all posts
-Future<String> getPosts() {
-  var c = new Completer();
-
-  // Send request to the server
-  HttpRequest.request("/posts", method: "GET").then((response) {
-    c.complete(response.responseText);
-  }).catchError((e) {
-    print("Unable to get posts");
-    c.complete("");
-  });
-
-  return c.future;
-}
-
-// Delete all posts
-Future deletePosts() {
-  var c = new Completer();
-
-  // Send request to the server
-  HttpRequest.request("/posts", method: "DELETE").then((response) {
-    c.complete(response.responseText);
-  }).catchError((e) {
-    print("Unable to delete posts");
-    c.complete("");
-  });
-
-  return c.future;
 }
 
