@@ -2,7 +2,7 @@ part of server;
 
 class Posts extends Vane {
   // Register the application pipeline
-  var pipeline = [Log, This];
+  var pipeline = [Log, Cors, This];
 
   // Set the collection name
   String collectionName = "posts";
