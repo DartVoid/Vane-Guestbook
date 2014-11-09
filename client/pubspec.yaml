@@ -1,4 +1,5 @@
-name: vane_guestbook
-description: A sample application
+name: client
 dependencies:
   browser: any
+
+

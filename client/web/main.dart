@@ -68,8 +68,11 @@ void main() {
   DivElement respWrap = querySelector("#response-wrapper");
   DivElement formResp = querySelector("#response");
 
-  // Init service
-  PostService service = new PostService();
+  // Init service (9090 for during development locally,
+  // otherwise use standard port 80 for production)
+  Uri uri = Uri.parse(window.location.href);
+  var port = uri.port != 8080 ? 80 : 9090;
+  PostService service = new PostService(serviceUrl: 'http://${uri.host}:${port}');
 
   // Get list of posts on load
   service.list().then((response) => addToDom(formResp, response));
